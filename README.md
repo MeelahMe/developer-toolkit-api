@@ -1,18 +1,18 @@
 # Developer Toolkit API
 
-The Developer Toolkit API is a modular backend service built with FastAPI. It provides a growing set of utility endpoints that simplify common developer tasks, such as JSON formatting and string manipulation. This project is designed for ease of use, extensibility, and clean code organization.
+The Developer Toolkit API is a modular backend service built with FastAPI. It provides a growing set of utility endpoints to simplify common developer tasks, such as JSON formatting and string manipulation. This project is designed for clarity, scalability, and easy testing.
 
 ## Features
 
 - JSON prettifier (minify and beautify raw JSON)
-- Modular, scalable route structure
-- Automatically generated OpenAPI documentation
-- Lightweight and fast with FastAPI
-- Unit testing with `pytest`
-- Optional containerization with Docker
-- CI-ready with GitHub Actions (coming soon)
+- Modular route structure using FastAPI routers
+- Auto-generated OpenAPI docs (Swagger UI and ReDoc)
+- Unit tested with `pytest`
+- Continuous integration using GitHub Actions
+- Optional Docker setup (coming soon)
 
 ## Project Structure
+
 
 ```c#
 developer-toolkit-api/
@@ -54,10 +54,38 @@ By default, the API will be available at:
 `http://localhost:8000`
 
 ## Running tests
-Comming soon in the `tests/` durectory using `pytest`.
+Unit tests are written with pytest.
+
+To run tests locally:
+
+```bash
+`PYTHONPATH=$(pwd) pytest`
+```
+You can also use `pytest.ini` to simplify local test runs:
+
+pytest.ini
+
+```bash
+[pytest]
+python_paths = .
+```
+Then run 
+
 ```bash
 pytest
 ```
+
+Continuous Integration
+
+Tests automatically run on each push and pull request using GitHub Actions. The workflow is defined in .github/workflows/ci.yml.
+
+To trigger a run:
+
+    Push any commit
+
+    Open a pull request
+
+You can view the results in the Actions tab of the repository.
 
 ## API documentation
 
@@ -86,6 +114,7 @@ Response:
   "prettified": "{\n    \"key\": \"value\"\n}"
 }
 ```
+
 ## Comming soon
 
 - UUID Generator
