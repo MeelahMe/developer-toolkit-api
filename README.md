@@ -17,9 +17,16 @@ The Developer Toolkit API is a modular backend service built with FastAPI. It pr
 ```c#
 developer-toolkit-api/
 ├── app/
+│   ├── __init__.py
 │   ├── main.py
 │   └── routes/
 │       └── json_tools.py
+├── tests/
+│   └── test_json_tools.py
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── pytest.ini
 ├── requirements.txt
 ├── README.md
 ├── .gitignore
@@ -75,7 +82,7 @@ Then run
 pytest
 ```
 
-Continuous Integration
+## Continuous Integration
 
 Tests automatically run on each push and pull request using GitHub Actions. The workflow is defined in .github/workflows/ci.yml.
 
