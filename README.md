@@ -2,6 +2,13 @@
 
 The Developer Toolkit API is a modular backend service built with FastAPI. It provides a growing set of utility endpoints to simplify common developer tasks, such as JSON formatting and string manipulation. This project is designed for clarity, scalability, and easy testing.
 
+## About FastAPI
+
+[FastAPI](https://fastapi.tiangolo.com/) is a modern, high-performance web framework for building APIs with Python 3.7+ based on standard Python type hints. It is designed for speed and developer productivity, offering automatic data validation, interactive documentation via Swagger and ReDoc, and seamless integration with asynchronous Python code.
+
+FastAPI is ideal for building APIs quickly while maintaining readability, robustness, and scalability. It is widely adopted for backend services, microservices, and machine learning model deployment.
+
+
 ## Features
 
 - JSON prettifier (minify and beautify raw JSON)
