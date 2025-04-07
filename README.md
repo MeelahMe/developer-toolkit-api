@@ -257,6 +257,11 @@ Rebuild without using cache:
 docker-compose build --no-cache
 ```
 
+## Benefits of Docker Compose
+
+- Scales easily with additional services (e.g., databases, task queues)
+- Defines infrastructure-as-code for local dev environments
+- Simplifies team collaboration with one-command startup
 
 ## Comming soon
 
