@@ -237,6 +237,26 @@ Once running, the API will be available at:
 
     ReDoc: `http://localhost:8000/redoc`
     
+## Common Commands
+
+Stop the running services:
+
+```bash
+docker-compose down
+```
+
+Rebuild the image and restart:
+
+```bash
+docker-compose up --build
+```
+
+Rebuild without using cache:
+
+```bash
+docker-compose build --no-cache
+```
+
 
 ## Comming soon
 
