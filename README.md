@@ -92,7 +92,7 @@ To trigger a run:
 
     Open a pull request
 
-You can view the results in the Actions tab of the repository.
+You can view the results in the **Actions** tab of the repository.
 
 ## API documentation
 
@@ -109,18 +109,123 @@ Returns a welcome message.
 
 `POST /tootls/json/prettify `
 Description: Beautifies a raw JSON string
-Request Body:
+**Request Body**:
 ```json
 {
   "content": "{\"key\":\"value\"}"
 }
 ```
-Response:
+**Response**:
 ```json
 {
   "prettified": "{\n    \"key\": \"value\"\n}"
 }
 ```
+
+## Running the App with Docker
+
+You can run the Developer Toolkit API in an isolated container using Docker. This approach is recommended for local development and deployment because it ensures consistent environments across machines.
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) installed and running
+- Clone the repository and navigate to the root directory
+
+### Dockerfile
+
+The project includes a `Dockerfile` that defines the container build steps:
+
+```Dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+## BUild the Docker image
+
+Run this command from the project root:
+```bash
+docker build -t developer-toolkit-api .
+```
+
+This will: 
+
+- Use Python 3.9 as the base image
+- Install dependencies from requirements.txt
+- Copy all app files into the container
+- Run the FastAPI app using Uvicorn
+
+## Run the Docker container
+
+After the image is built, start a container: 
+```bash
+docker run -p 8000:8000 developer-toolkit-api
+```
+
+You can now access the API at:
+
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+To run in detached mode use this command: 
+```bash
+docker run -d -p 8000:8000 --name dev-tools-api developer-toolkit-api
+```
+
+## Stop and remove the container
+
+```bash
+docker stop dev-tools-api
+docker rm dev-tools-api
+```
+## Optional: Adding .dockerignore
+To reduce image size and exclude unnecessary files, use a  .dockerignore by adding this file in your root: 
+```bash
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+*.log
+.git/
+.gitignore
+tests/
+```
+This ensures only the necessary application files are included in your final image.
+
+## Running with Docker Compose
+
+You can also use Docker Compose to manage the application and future services like databases or caching layers. This is a scalable approach for development and deployment.
+
+### docker-compose.yml
+
+This file defines the API service and allows you to run it with a single command:
+
+```yaml
+version: '3.9'
+
+services:
+  api:
+    build: .
+    container_name: developer-toolkit-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
 
 ## Comming soon
 
