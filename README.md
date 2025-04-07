@@ -225,7 +225,18 @@ services:
       - .:/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
+## Running the Application
 
+To build and start the service:
+
+`docker-compose up --build`
+
+Once running, the API will be available at:
+
+    Swagger UI: `http://localhost:8000/docs`
+
+    ReDoc: `http://localhost:8000/redoc`
+    
 
 ## Comming soon
 
