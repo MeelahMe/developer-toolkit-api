@@ -304,7 +304,6 @@ Returns a welcome message confirming the API is running.
 Formats a raw JSON string with proper indentation.
 
 **Request Body**
-
 ```json
 {
   "content": "{\"key\":\"value\"}"
@@ -312,7 +311,6 @@ Formats a raw JSON string with proper indentation.
 ```
 
 **Response**
-
 ```json
 {
   "prettified": "{\n    \"key\": \"value\"\n}"
@@ -323,7 +321,6 @@ Formats a raw JSON string with proper indentation.
 Generates a random UUID (version 4).
 
 **Response**
-
 ```json
 {
   "uuid": "c3d1a60e-5f63-42a5-8469-789db166e1b9"
@@ -336,14 +333,12 @@ Generates a random UUID (version 4).
 Encodes a plain text string into Base64.
 
 **Request Body**
-
 ```json
 {
   "content": "hello world"
 }
 ```
 **Response**
-
 ```json
 {
   "encoded": "aGVsbG8gd29ybGQ="
@@ -364,18 +359,54 @@ Decodes a Base64-encoded string back to plain text.
 ```
 
 **Response**
-
 ```json
 {
   "decoded": "hello world"
 }
 ```
 
-And in your route summary table:
+---
+
+### `POST /tools/time/convert`
+
+Converts between a UNIX timestamp and an ISO 8601 date string.
+
+You must provide **either** a `timestamp` or a `date_string`.
+
+**Request Body (timestamp to date):**
+```json
+{
+  "timestamp": 1609459200
+}
+```
+
+**Response**:
+```json
+{
+  "date_string": "2021-01-01T00:00:00"
+}
+```
+**Request Body (date to timestamp)**:
+```json
+{
+  "date_string": "2021-01-01T00:00:00"
+}
+```
+
+**Response**:
+```json
+{
+  "timestamp": 1609459200
+}
+```
+
+## Route summary table:
 
 ```markdown
 | POST | `/tools/base64/encode` | Encodes a string to Base64 |
 | POST | `/tools/base64/decode` | Decodes a Base64 string    |
+| POST | `/tools/time/convert`  | Converts between UNIX timestamp and ISO date string |
+
 ```
 
 ## Comming soon
