@@ -41,5 +41,5 @@ def test_generate_password_with_all_sets_false():
     )
     assert response.status_code == 400
     assert response.json()["detail"] == "At least one character set must be selected."
-ert response.json()["detail"] == "At least one character set must be selected."
+    assert response.json()["detail"] == "At least one character set must be selected."
 
