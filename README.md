@@ -270,6 +270,63 @@ docker-compose build --no-cache
 - Defines infrastructure-as-code for local dev environments
 - Simplifies team collaboration with one-command startup
 
+## API Documentation
+
+FastAPI automatically generates two UIs:
+
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+---
+
+## Route Overview
+
+| Method | Endpoint                       | Description                |
+|--------|--------------------------------|----------------------------|
+| GET    | `/`                            | Root welcome message       |
+| POST   | `/tools/json/prettify`         | Prettifies raw JSON input |
+| GET    | `/tools/uuid/generate`         | Generates a UUID v4        |
+
+---
+
+## Available Routes
+
+### `GET /`
+
+Returns a welcome message confirming the API is running.
+
+---
+
+### `POST /tools/json/prettify`
+
+Formats a raw JSON string with proper indentation.
+
+**Request Body**
+```json
+{
+  "content": "{\"key\":\"value\"}"
+}
+```
+
+**Response**
+
+```json
+{
+  "prettified": "{\n    \"key\": \"value\"\n}"
+}
+```
+## GET /tools/uuid/generate
+
+Generates a random UUID (version 4).
+
+**Response**
+
+```json
+{
+  "uuid": "c3d1a60e-5f63-42a5-8469-789db166e1b9"
+}
+```
+
 ## Comming soon
 
 - UUID Generator
