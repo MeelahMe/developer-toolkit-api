@@ -1,14 +1,12 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
-from typing import Optional
-from typing import Union
-from datetime import datetime
-from datetime import timezone
+from typing import Optional, Union
+from datetime import datetime, timezone
 
-
+# Create a router for all time-related tools
 router = APIRouter(prefix="/tools/time", tags=["Time Tools"])
 
-# Input model that accepts either a timestamp or a date string
+# Input model: user can provide either a timestamp or a date string
 class TimeConversionInput(BaseModel):
     timestamp: Optional[int] = Field(
         default=None,
@@ -21,11 +19,11 @@ class TimeConversionInput(BaseModel):
         description="ISO 8601 date string (optional)"
     )
 
-# Response model when converting to timestamp
+# Output model when converting to timestamp
 class TimestampResponse(BaseModel):
     timestamp: int
 
-# Response model when converting to date string
+# Output model when converting to date string
 class DateStringResponse(BaseModel):
     date_string: str
 
@@ -33,26 +31,27 @@ class DateStringResponse(BaseModel):
     "/convert",
     response_model=Union[TimestampResponse, DateStringResponse],
     summary="Convert between timestamp and date string",
-    response_description="Returns either a timestamp or a formatted date string"
+    response_description="Returns either a timestamp or an ISO 8601 date string"
 )
 def convert_time(data: TimeConversionInput):
     """
-    Convert between UNIX timestamps and ISO 8601 date strings.
+    Convert between a UNIX timestamp and an ISO 8601 date string (UTC-based).
 
-    You must provide either a `timestamp` or a `date_string`.
-
-    - If `timestamp` is provided, the response will include a `date_string`.
-    - If `date_string` is provided, the response will include a `timestamp`.
+    You must provide either:
+    - `timestamp`: to get a `date_string`
+    - `date_string`: to get a `timestamp`
 
     Returns:
         JSON object with the converted value.
     """
     try:
         if data.timestamp is not None:
+            # Convert UNIX timestamp to ISO-formatted UTC string
             dt = datetime.utcfromtimestamp(data.timestamp)
             return {"date_string": dt.isoformat()}
 
         elif data.date_string is not None:
+            # Convert ISO date string to UNIX timestamp (assumed UTC)
             dt = datetime.fromisoformat(data.date_string).replace(tzinfo=timezone.utc)
             return {"timestamp": int(dt.timestamp())}
 
