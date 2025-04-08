@@ -1,3 +1,9 @@
+![Build](https://img.shields.io/github/actions/workflow/status/MeelahMe/developer-toolkit-api/ci.yml?label=build&logo=github)
+![Python](https://img.shields.io/badge/python-3.9+-blue?logo=python&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-pytest-green?logo=pytest)
+
+A modern FastAPI microservice that helps developers with encoding, formatting, timestamp conversion, UUID generation, and more.
+
 # Developer Toolkit API
 
 The Developer Toolkit API is a modular backend service built with FastAPI. It provides a growing set of utility endpoints to simplify common developer tasks, such as JSON formatting and string manipulation. This project is designed for clarity, scalability, and easy testing.
