@@ -18,5 +18,6 @@ def test_prettify_invalid_json():
         json={"content": "{name: Jameelah"}  # Invalid JSON
     )
     assert response.status_code == 400
-    assert response.json()["detail"] == "Invalid JSON input."
+    assert response.json()["detail"] == "Invalid JSON string."
+
 

@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from typing import Union
 from datetime import datetime
+from datetime import timezone
 
 
 router = APIRouter(prefix="/tools/time", tags=["Time Tools"])
@@ -48,11 +49,11 @@ def convert_time(data: TimeConversionInput):
     """
     try:
         if data.timestamp is not None:
-            dt = datetime.fromtimestamp(data.timestamp)
+            dt = datetime.utcfromtimestamp(data.timestamp)
             return {"date_string": dt.isoformat()}
 
         elif data.date_string is not None:
-            dt = datetime.fromisoformat(data.date_string)
+            dt = datetime.fromisoformat(data.date_string).replace(tzinfo=timezone.utc)
             return {"timestamp": int(dt.timestamp())}
 
         else:

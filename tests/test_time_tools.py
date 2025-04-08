@@ -12,5 +12,6 @@ def test_convert_timestamp_to_date():
 def test_convert_date_to_timestamp():
     response = client.post("/tools/time/convert", json={"date_string": "2021-01-01T00:00:00"})
     assert response.status_code == 200
-    assert response.json()["timestamp"] == 1609459200
+    assert response.json()["timestamp"] == 1609459200  # This assumes UTC!
+
 
