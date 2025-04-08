@@ -2,20 +2,21 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 import json
 
+# Create a FastAPI router with a URL prefix and tag for grouping
 router = APIRouter(prefix="/tools/json", tags=["JSON Tools"])
 
-# Request model with a raw JSON string input
+# Request model for the JSON prettifier
 class JSONPrettifyInput(BaseModel):
     content: str = Field(
         example='{"key":"value"}',
-        description="Raw JSON string to format"
+        description="Raw JSON string to be formatted"
     )
 
-# Response model with prettified output
+# Response model for the prettified JSON output
 class JSONPrettifyResponse(BaseModel):
     prettified: str = Field(
         example='{\n    "key": "value"\n}',
-        description="Formatted JSON string with indentation"
+        description="Formatted JSON string with proper indentation"
     )
 
 @router.post(
@@ -26,19 +27,19 @@ class JSONPrettifyResponse(BaseModel):
 )
 def prettify_json(data: JSONPrettifyInput):
     """
-    Prettify (beautify) a raw JSON string.
+    Convert a compact JSON string into a human-readable, formatted string.
 
-    Accepts a compact JSON string and returns a formatted version
-    with indentation and line breaks.
+    Parameters:
+        data (JSONPrettifyInput): JSON payload containing raw JSON text.
 
     Returns:
-        JSON object containing a single `prettified` key with the formatted string.
+        JSONPrettifyResponse: A dictionary with the prettified version of the input JSON.
     """
     try:
-        # Parse the input JSON string to an object
+        # Parse the raw JSON string into a Python object
         parsed = json.loads(data.content)
 
-        # Convert it back to a nicely indented string
+        # Re-convert to JSON with indentation
         prettified = json.dumps(parsed, indent=4)
 
         return {"prettified": prettified}

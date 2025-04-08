@@ -2,30 +2,31 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 import base64
 
+# Create a router for Base64 encoding/decoding routes
 router = APIRouter(prefix="/tools/base64", tags=["Base64 Tools"])
 
-# Input model for encoding plain text
+# Request model for encoding input
 class Base64EncodeInput(BaseModel):
     content: str = Field(
         example="hello world",
         description="The plain text string to encode into Base64"
     )
 
-# Output model for encoded result
+# Response model for encoded result
 class Base64EncodeResponse(BaseModel):
     encoded: str = Field(
         example="aGVsbG8gd29ybGQ=",
-        description="The Base64-encoded string"
+        description="The Base64-encoded output string"
     )
 
-# Input model for decoding Base64 string
+# Request model for decoding input
 class Base64DecodeInput(BaseModel):
     encoded: str = Field(
         example="aGVsbG8gd29ybGQ=",
         description="The Base64-encoded string to decode"
     )
 
-# Output model for decoded result
+# Response model for decoded result
 class Base64DecodeResponse(BaseModel):
     decoded: str = Field(
         example="hello world",
@@ -36,14 +37,17 @@ class Base64DecodeResponse(BaseModel):
     "/encode",
     response_model=Base64EncodeResponse,
     summary="Encode a string to Base64",
-    response_description="Returns the Base64-encoded version of the input"
+    response_description="Returns the Base64-encoded result"
 )
 def encode_base64(data: Base64EncodeInput):
     """
-    Encode a plain text string into Base64.
+    Encode a plain text string into Base64 format.
 
-    Accepts a `content` field containing a UTF-8 string,
-    and returns its Base64-encoded version.
+    Parameters:
+        data (Base64EncodeInput): JSON object with a 'content' field.
+
+    Returns:
+        Base64EncodeResponse: Encoded Base64 string.
     """
     try:
         encoded = base64.b64encode(data.content.encode("utf-8")).decode("utf-8")
@@ -54,15 +58,18 @@ def encode_base64(data: Base64EncodeInput):
 @router.post(
     "/decode",
     response_model=Base64DecodeResponse,
-    summary="Decode a Base64 string to plain text",
-    response_description="Returns the decoded string"
+    summary="Decode a Base64 string",
+    response_description="Returns the decoded plain text result"
 )
 def decode_base64(data: Base64DecodeInput):
     """
-    Decode a Base64 string back into plain text.
+    Decode a Base64 string into a plain UTF-8 string.
 
-    Accepts an `encoded` field containing a Base64 string,
-    and returns the decoded UTF-8 string.
+    Parameters:
+        data (Base64DecodeInput): JSON object with an 'encoded' field.
+
+    Returns:
+        Base64DecodeResponse: Decoded plain text string.
     """
     try:
         decoded_bytes = base64.b64decode(data.encoded.encode("utf-8"))
