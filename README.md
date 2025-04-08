@@ -329,8 +329,6 @@ Generates a random UUID (version 4).
 
 ## Comming soon
 
-- UUID Generator
-
 - Timestamp Converter
 
 - Base64 Encoder/Decoder
