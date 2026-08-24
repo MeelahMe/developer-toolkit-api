@@ -478,6 +478,26 @@ These changes resolved **61 of the 78 findings**.
 
 The remaining **17 vulnerabilities** (3 CRITICAL, 14 HIGH) are documented in [`.trivyignore`](.trivyignore). Each has no upstream fix available yet from Debian as of the scan date, and all affect OS utilities the application does not invoke directly (`perl`, `gzip`, `ncurses`, `acl`) rather than application code paths. This is a deliberate, documented risk acceptance, not a suppression of the scan, and is re-evaluated whenever the pipeline runs against a fresh vulnerability database.
 
+
+## Secret Detection
+
+I added [gitleaks](https://github.com/gitleaks/gitleaks) as another job in the pipeline. It scans the full commit history, not just the current code, looking for things like API keys or tokens that got committed by accident.
+
+It runs on its own, separate from the test and container scan jobs. It doesn't need the app to actually build since it's just scanning text and git history, so there's no reason to make it wait in line behind the other jobs.
+
+### Making sure it actually works
+
+I didn't want to just write the YAML and assume it worked, so I tested it. I committed a fake AWS-key-shaped string on a throwaway branch to see if gitleaks would catch it. First run, it didn't, because I'd made the change to the workflow file locally but never actually committed it before pushing the test branch. So the job that was supposed to catch the fake secret wasn't even in the pipeline yet when it ran. Once I realized that, it made sense why it passed.
+
+Somewhere in there I also ended up accidentally merging that test branch into master, fake secret and all. Nothing sensitive since it was a made-up key, not a real one, but I didn't want it sitting in the history like it belonged there. Cleaned it up with `git revert -m 1` instead of rewriting history, since the branch had already been pushed and reverting keeps an honest record of what happened rather than pretending it didn't.
+
+After actually committing the workflow change to master, I reran everything and confirmed it worked: no leaks in the real codebase, and I'd already seen it correctly flag the fake one earlier.
+
+### What I'd add next
+
+- Pre-commit hooks, so secrets get caught before they're ever pushed, not after
+- Custom rules for any credential patterns specific to this project that gitleaks' defaults might miss
+
 ### What I'd add next
 
 - **SBOM generation** (for example, via Trivy's own SBOM output) for full dependency transparency
