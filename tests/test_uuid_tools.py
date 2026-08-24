@@ -3,6 +3,7 @@ from app.main import app
 
 client = TestClient(app)
 
+
 def test_generate_uuid():
     """
     Test that the UUID endpoint returns a valid UUID string.
@@ -12,4 +13,3 @@ def test_generate_uuid():
     uuid_str = response.json().get("uuid")
     assert isinstance(uuid_str, str)
     assert len(uuid_str) == 36  # UUID v4 is always 36 characters
-
