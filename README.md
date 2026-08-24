@@ -1,6 +1,7 @@
-![Build](https://img.shields.io/github/actions/workflow/status/MeelahMe/developer-toolkit-api/ci.yml?label=build&logo=github)
-![Python](https://img.shields.io/badge/python-3.9+-blue?logo=python&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-pytest-green?logo=pytest)
+[![Build](https://img.shields.io/github/actions/workflow/status/MeelahMe/developer-toolkit-api/ci.yml?label=build&logo=github)](https://github.com/MeelahMe/developer-toolkit-api/actions)
+[![Python](https://img.shields.io/badge/python-3.12+-blue?logo=python)](https://www.python.org/)
+[![Tests](https://img.shields.io/badge/tests-pytest-green?logo=pytest)](https://github.com/MeelahMe/developer-toolkit-api)
+[![Security Scan](https://img.shields.io/badge/security-trivy%20scanned-blue?logo=trivy)](https://github.com/MeelahMe/developer-toolkit-api/blob/master/.trivyignore)
 
 A modern FastAPI microservice that helps developers with encoding, formatting, timestamp conversion, UUID generation, and more.
 
@@ -458,7 +459,7 @@ This project's CI/CD pipeline includes automated container vulnerability scannin
 
 ### Why Trivy
 
-Trivy scans the built Docker image for known vulnerabilities (CVEs) in both OS-level packages and Python dependencies, and fails the build (`exit-code: 1`) if any CRITICAL or HIGH severity issues are found with an available fix. This turns vulnerability scanning from a passive report into an enforced gate — a container with fixable critical/high vulnerabilities cannot pass CI.
+Trivy scans the built Docker image for known vulnerabilities (CVEs) in both OS-level packages and Python dependencies, and fails the build (`exit-code: 1`) if any CRITICAL or HIGH severity issues are found with an available fix. This turns vulnerability scanning from a passive report into an enforced gate. A container with fixable critical or high vulnerabilities cannot pass CI.
 
 ### What was found and fixed
 
@@ -467,21 +468,21 @@ The first scan against the original `python:3.9-slim` image surfaced **78 vulner
 | Issue | Root Cause | Fix |
 |---|---|---|
 | Stale OS packages (util-linux, openssl core, libcap2, etc.) | Base image OS packages were outdated relative to available Debian security patches | Added `apt-get update && apt-get upgrade -y` to the Dockerfile to pull current patches at build time |
-| Outdated Python version | `python:3.9-slim` blocked upgrading to a patched FastAPI/Starlette (FastAPI ≥0.129 requires Python ≥3.10) | Bumped base image to `python:3.12-slim` |
+| Outdated Python version | `python:3.9-slim` blocked upgrading to a patched FastAPI/Starlette (FastAPI 0.129 and above requires Python 3.10 or higher) | Bumped base image to `python:3.12-slim` |
 | Vulnerable Starlette (CVE-2026-48818, CVE-2026-54283) | Outdated FastAPI pinned an old Starlette transitively | Upgraded FastAPI to 0.141.1, which resolved to a patched Starlette (1.6.0) |
-| CI/Dockerfile Python version mismatch | The GitHub Actions `test` job still specified Python 3.9 after the Dockerfile was upgraded to 3.12 | Synced both to Python 3.12 to prevent environment drift between test and build environments |
+| CI and Dockerfile Python version mismatch | The GitHub Actions `test` job still specified Python 3.9 after the Dockerfile was upgraded to 3.12 | Synced both to Python 3.12 to prevent environment drift between test and build environments |
 
 These changes resolved **61 of the 78 findings**.
 
 ### Remaining accepted risk
 
-The remaining **17 vulnerabilities** (3 CRITICAL, 14 HIGH) are documented in [`.trivyignore`](.trivyignore). Each has no upstream fix available yet from Debian as of the scan date, and all affect OS utilities the application does not invoke directly (`perl`, `gzip`, `ncurses`, `acl`) rather than application code paths. This is a deliberate, documented risk acceptance — not a suppression of the scan — and is re-evaluated whenever the pipeline runs against a fresh vulnerability database.
+The remaining **17 vulnerabilities** (3 CRITICAL, 14 HIGH) are documented in [`.trivyignore`](.trivyignore). Each has no upstream fix available yet from Debian as of the scan date, and all affect OS utilities the application does not invoke directly (`perl`, `gzip`, `ncurses`, `acl`) rather than application code paths. This is a deliberate, documented risk acceptance, not a suppression of the scan, and is re-evaluated whenever the pipeline runs against a fresh vulnerability database.
 
 ### What I'd add next
 
-- **SBOM generation** (e.g., via Trivy's own SBOM output) for full dependency transparency
-- **Image signing** (e.g., cosign) to verify build provenance
-- **Scheduled re-scans** independent of code pushes, to catch newly-disclosed CVEs against an unchanged image
+- **SBOM generation** (for example, via Trivy's own SBOM output) for full dependency transparency
+- **Image signing** (for example, cosign) to verify build provenance
+- **Scheduled re-scans** independent of code pushes, to catch newly disclosed CVEs against an unchanged image
 
 ## Comming soon
 
