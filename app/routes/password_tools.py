@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Query, HTTPException
 from pydantic import BaseModel, Field
-import random
+import secrets
 import string
 
 # Create a router for password-related endpoints
@@ -65,5 +65,5 @@ def generate_password(
         )
 
     # Generate password using random choices from pool
-    password = "".join(random.choices(character_pool, k=length))
+    password = "".join(secrets.choice(character_pool) for _ in range(length))
     return {"password": password}
