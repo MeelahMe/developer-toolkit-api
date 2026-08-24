@@ -1,0 +1,19 @@
+# All entries below are OS-level packages in the python:3.12-slim base image
+# with no upstream fix available yet as of 2026-08-24 (Trivy reports status
+# "affected" or "fix_deferred", no fixed version published).
+# Reviewed and accepted: this container does not use gzip, perl, acl, or
+# ncurses functionality directly - all are unused base-image utilities,
+# not application dependencies. Re-check on next scheduled scan.
+
+CVE-2026-41992
+CVE-2026-54369
+CVE-2025-69720
+CVE-2026-14456
+CVE-2026-13221
+CVE-2026-42496
+CVE-2026-8376
+CVE-2026-42497
+CVE-2026-48962
+CVE-2026-57432
+CVE-2026-57433
+CVE-2026-9538
