@@ -493,21 +493,30 @@ Somewhere in there I also ended up accidentally merging that test branch into ma
 
 After actually committing the workflow change to master, I reran everything and confirmed it worked: no leaks in the real codebase, and I'd already seen it correctly flag the fake one earlier.
 
-### What I'd add next
 
-- Pre-commit hooks, so secrets get caught before they're ever pushed, not after
-- Custom rules for any credential patterns specific to this project that gitleaks' defaults might miss
+## Static Code Analysis
 
-### What I'd add next
+I added [Semgrep](https://semgrep.dev) as a third security job in the pipeline. Where Trivy looks at the container image and gitleaks looks at git history, Semgrep actually reads the source code itself, including the workflow YAML and Dockerfile, looking for risky patterns.
 
-- **SBOM generation** (for example, via Trivy's own SBOM output) for full dependency transparency
-- **Image signing** (for example, cosign) to verify build provenance
-- **Scheduled re-scans** independent of code pushes, to catch newly disclosed CVEs against an unchanged image
+It runs independently too, same as the secrets scan, since it doesn't need the app to build first.
 
-## Comming soon
+### What it actually caught
 
-- URL Encoder/Decoder
-- IP Info Lookup
+First run turned up 8 findings, but they all traced back to the same underlying issue: every `uses:` line in my GitHub Actions workflow was pointing at a mutable tag or branch, things like `@v3` or `@master`, instead of a pinned commit. That matters because whoever controls those actions could, in theory, repoint the tag to different code later, and my pipeline would silently start running it. Semgrep's own rule flagged two real past incidents where exactly that happened.
+
+I fixed it by pinning every action to its actual commit SHA, using `git ls-remote --tags` against each repo to get the real SHA rather than trusting a copy-pasted one. Ran into an interesting wrinkle along the way: some tags are "annotated," meaning they show up as two different SHAs when you look them up, and only one of them (the one marked `^{}`) is the actual commit you want. Took a minute to understand why that was happening, but now I know it for good.
+
+## Pre-commit Hooks
+
+On top of everything running in CI, I set up pre-commit hooks so the same kind of checks run locally, before a commit even happens, not just after I push and wait for the pipeline.
+
+Right now it runs two things on every commit:
+- gitleaks, same secret scanner as CI, catching a leaked key before it's ever pushed instead of after
+- ruff, for linting and formatting, it replaced what used to take three separate tools (flake8, black, isort) and it's noticeably faster
+
+The first time I ran it against the whole existing codebase, it reformatted 11 files. Nothing was broken, ruff just found real formatting drift that had built up over time and fixed it automatically. That's actually the setup working exactly as intended, catching something real on the very first run instead of sitting there doing nothing.
+
+Worth being clear: pre-commit isn't a replacement for the CI checks, it can be skipped and it only runs on machines that have it installed. It's a faster first layer, CI is still the actual gate.
 
 ## License 
 This project is licensed under the MIT License.
