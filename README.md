@@ -533,6 +533,23 @@ I built this with a single shared key rather than per-user keys, since this is a
 
 One thing I'd add for a more security-sensitive version of this: `secrets.compare_digest()` instead of a plain string comparison when checking the key, to avoid a timing attack where an attacker could theoretically infer how much of the key they got right based on how long the comparison takes. Low real risk for a project like this, but it's the kind of detail that matters more the higher the stakes get.
 
+## Metrics
+
+The API exposes a `/metrics` endpoint in Prometheus's standard text format, tracking total requests and request duration, broken down by method, path, and status code.
+
+Unlike the tool endpoints, `/metrics` doesn't require an API key. This is deliberate: Prometheus's own scraper needs to hit this endpoint automatically and repeatedly, without a human involved, so requiring auth here would mean either hardcoding a key into monitoring infrastructure or building a separate exemption anyway. The standard real-world approach is to protect `/metrics` at the network level instead, firewall rules or internal-only routing, not application-level auth.
+
+Example:
+```bash
+curl http://localhost:8000/metrics
+```
+
+Returns Prometheus exposition format, including built-in Python runtime metrics (garbage collection stats, interpreter info) alongside the custom `http_requests_total` and `http_request_duration_seconds` metrics this app defines.
+
+### What I'd add next
+
+- A Grafana dashboard reading from this endpoint, to actually visualize request rates and latency over time
+- Alerting rules (e.g., error rate exceeding some threshold), the kind of thing this endpoint makes possible but doesn't do on its own
 
 ## License 
 This project is licensed under the MIT License.
