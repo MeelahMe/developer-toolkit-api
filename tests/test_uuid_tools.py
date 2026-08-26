@@ -1,14 +1,8 @@
-from fastapi.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
-
-
-def test_generate_uuid():
+def test_generate_uuid(client, auth_headers):
     """
     Test that the UUID endpoint returns a valid UUID string.
     """
-    response = client.get("/tools/uuid/generate")
+    response = client.get("/tools/uuid/generate", headers=auth_headers)
     assert response.status_code == 200
     uuid_str = response.json().get("uuid")
     assert isinstance(uuid_str, str)

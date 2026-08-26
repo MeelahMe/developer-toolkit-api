@@ -3,6 +3,8 @@ import uuid
 from fastapi import FastAPI, Request
 from app.logging_config import setup_logging
 from app.routes import json_tools, uuid_tools, base64_tools, time_tools, password_tools
+from app.auth import verify_api_key
+from fastapi import Depends
 
 logger = setup_logging()
 
@@ -46,11 +48,11 @@ async def log_requests(request: Request, call_next):
     return response
 
 
-app.include_router(json_tools.router)
-app.include_router(uuid_tools.router)
-app.include_router(base64_tools.router)
-app.include_router(time_tools.router)
-app.include_router(password_tools.router)
+app.include_router(json_tools.router, dependencies=[Depends(verify_api_key)])
+app.include_router(uuid_tools.router, dependencies=[Depends(verify_api_key)])
+app.include_router(base64_tools.router, dependencies=[Depends(verify_api_key)])
+app.include_router(time_tools.router, dependencies=[Depends(verify_api_key)])
+app.include_router(password_tools.router, dependencies=[Depends(verify_api_key)])
 
 
 @app.get("/", tags=["Root"])
