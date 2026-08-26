@@ -9,7 +9,7 @@ from app.metrics import REQUEST_COUNT, REQUEST_DURATION
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from fastapi import Response
 from sqlalchemy.orm import Session
-from app.database import SessionLocal, get_db
+from app.database import SessionLocal, get_db, Base, engine
 from app.models import RequestLog
 
 logger = setup_logging()
@@ -27,6 +27,11 @@ app = FastAPI(
         "url": "https://opensource.org/licenses/MIT",
     },
 )
+
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
 
 
 @app.middleware("http")
