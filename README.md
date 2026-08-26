@@ -23,34 +23,35 @@ Developer Toolkit API is a FastAPI microservice that provides a small set of dev
 
 ## Project structure
 
+```
 developer-toolkit-api/
 ├── app/
-│ ├── init.py
-│ ├── main.py # App instance, middleware, routes
-│ ├── auth.py # API key verification
-│ ├── database.py # SQLAlchemy engine and session setup
-│ ├── models.py # RequestLog model
-│ ├── metrics.py # Prometheus counters and histograms
-│ ├── logging_config.py # JSON log formatter
-│ └── routes/
-│ ├── json_tools.py
-│ ├── uuid_tools.py
-│ ├── base64_tools.py
-│ ├── time_tools.py
-│ └── password_tools.py
+│   ├── __init__.py
+│   ├── main.py            # App instance, middleware, routes
+│   ├── auth.py             # API key verification
+│   ├── database.py         # SQLAlchemy engine and session setup
+│   ├── models.py           # RequestLog model
+│   ├── metrics.py          # Prometheus counters and histograms
+│   ├── logging_config.py   # JSON log formatter
+│   └── routes/
+│       ├── json_tools.py
+│       ├── uuid_tools.py
+│       ├── base64_tools.py
+│       ├── time_tools.py
+│       └── password_tools.py
 ├── tests/
-│ ├── conftest.py # Shared client and auth fixtures
-│ ├── test_main.py
-│ └── test_*.py # One file per route module
-├── docs/ # Detailed documentation (see table above)
+│   ├── conftest.py         # Shared client and auth fixtures
+│   ├── test_main.py
+│   └── test_*.py           # One file per route module
+├── docs/                   # Detailed documentation (see table above)
 ├── .github/workflows/ci.yml
 ├── .trivyignore
 ├── .pre-commit-config.yaml
 ├── Dockerfile
-├── requirements.txt # Runtime dependencies
-├── requirements-dev.txt # Test, lint, and security tooling
+├── requirements.txt         # Runtime dependencies
+├── requirements-dev.txt     # Test, lint, and security tooling
 └── README.md
-
+```
 
 ## Getting started
 
