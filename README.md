@@ -561,17 +561,5 @@ Returns the most recent requests (50 by default, adjustable with `?limit=`), new
 
 The database schema is created automatically on app startup, no manual setup step required, so this works the same way on a fresh clone as it does locally.
 
-### What I'd add next
-
-- Pagination instead of a flat `limit`, for querying further back in history
-- A way to filter by path or status code, useful once the table has real volume
-- Moving off SQLite to Postgres if this ever needed to run with multiple app instances at once, SQLite's single-file design doesn't handle concurrent writes from separate processes well
-
-
-### What I'd add next
-
-- A Grafana dashboard reading from this endpoint, to actually visualize request rates and latency over time
-- Alerting rules (e.g., error rate exceeding some threshold), the kind of thing this endpoint makes possible but doesn't do on its own
-
 ## License 
 This project is licensed under the MIT License.
