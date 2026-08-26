@@ -526,7 +526,7 @@ Set your key in a `.env` file at the project root (see `.env.example` for the ex
 
 Example request:
 ```bash
-curl -H "X-API-Key: your-key-here" http://localhost:8000/tools/uuid/generat #gitleaks:allow
+curl -H "X-API-Key: your-key-here" http://localhost:8000/tools/uuid/generat # gitleaks:allow
 ```
 
 I built this with a single shared key rather than per-user keys, since this is a personal toolkit API, not a multi-tenant service. A production version handling real users would need per-key issuance, rotation, and probably rate limiting per key, none of which felt necessary here, but worth naming as the honest next step if this ever needed to support more than one person.
