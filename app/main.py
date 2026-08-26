@@ -5,6 +5,9 @@ from app.logging_config import setup_logging
 from app.routes import json_tools, uuid_tools, base64_tools, time_tools, password_tools
 from app.auth import verify_api_key
 from fastapi import Depends
+from app.metrics import REQUEST_COUNT, REQUEST_DURATION
+from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from fastapi import Response
 
 logger = setup_logging()
 
@@ -31,7 +34,18 @@ async def log_requests(request: Request, call_next):
 
     response = await call_next(request)
 
-    duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
+    duration_seconds = time.perf_counter() - start_time
+    duration_ms = round(duration_seconds * 1000, 2)
+
+    REQUEST_COUNT.labels(
+        method=request.method,
+        path=request.url.path,
+        status_code=response.status_code,
+    ).inc()
+    REQUEST_DURATION.labels(
+        method=request.method,
+        path=request.url.path,
+    ).observe(duration_seconds)
 
     logger.info(
         "request_handled",
@@ -46,6 +60,11 @@ async def log_requests(request: Request, call_next):
 
     response.headers["X-Request-ID"] = request_id
     return response
+
+
+@app.get("/metrics", tags=["Monitoring"])
+def metrics():
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 app.include_router(json_tools.router, dependencies=[Depends(verify_api_key)])
