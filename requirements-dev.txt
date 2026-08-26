@@ -1,1 +1,5 @@
 pre-commit
+pytest
+httpx
+semgrep
+bandit

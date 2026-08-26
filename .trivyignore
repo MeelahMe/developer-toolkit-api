@@ -17,3 +17,9 @@ CVE-2026-48962
 CVE-2026-57432
 CVE-2026-57433
 CVE-2026-9538
+# Added 2026-08-26: libsqlite3 in python:3.12-slim base image, no fixed
+# version published by Debian as of this date. This application does not
+# use SQLite (no database currently implemented), so these vulnerabilities
+# have no real attack surface in this specific application.
+CVE-2026-11822
+CVE-2026-11824
