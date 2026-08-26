@@ -546,6 +546,28 @@ curl http://localhost:8000/metrics
 
 Returns Prometheus exposition format, including built-in Python runtime metrics (garbage collection stats, interpreter info) alongside the custom `http_requests_total` and `http_request_duration_seconds` metrics this app defines.
 
+
+## Usage History
+
+The API also persists a record of every request to a local SQLite database (`usage.db`), the same middleware that handles structured logging and metrics writes each request's method, path, status code, and duration to a `request_logs` table.
+
+An authenticated `/usage` endpoint reads that history back:
+
+```bash
+curl -H "X-API-Key: your-key-here" http://localhost:8000/usage # gitleaks:allow
+```
+
+Returns the most recent requests (50 by default, adjustable with `?limit=`), newest first. Since the logging middleware runs on every request regardless of outcome, this includes rejected/unauthenticated attempts too, a genuine audit trail, not just a log of successful calls.
+
+The database schema is created automatically on app startup, no manual setup step required, so this works the same way on a fresh clone as it does locally.
+
+### What I'd add next
+
+- Pagination instead of a flat `limit`, for querying further back in history
+- A way to filter by path or status code, useful once the table has real volume
+- Moving off SQLite to Postgres if this ever needed to run with multiple app instances at once, SQLite's single-file design doesn't handle concurrent writes from separate processes well
+
+
 ### What I'd add next
 
 - A Grafana dashboard reading from this endpoint, to actually visualize request rates and latency over time
