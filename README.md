@@ -518,5 +518,21 @@ The first time I ran it against the whole existing codebase, it reformatted 11 f
 
 Worth being clear: pre-commit isn't a replacement for the CI checks, it can be skipped and it only runs on machines that have it installed. It's a faster first layer, CI is still the actual gate.
 
+## Authentication
+
+Every tool endpoint requires an API key, sent via the `X-API-Key` header. The root route (`/`) stays open without a key, useful as a lightweight health check.
+
+Set your key in a `.env` file at the project root (see `.env.example` for the expected format), the app reads it at startup and rejects any request with a missing or incorrect key.
+
+Example request:
+```bash
+curl -H "X-API-Key: your-key-here" http://localhost:8000/tools/uuid/generat #gitleaks:allowe
+```
+
+I built this with a single shared key rather than per-user keys, since this is a personal toolkit API, not a multi-tenant service. A production version handling real users would need per-key issuance, rotation, and probably rate limiting per key, none of which felt necessary here, but worth naming as the honest next step if this ever needed to support more than one person.
+
+One thing I'd add for a more security-sensitive version of this: `secrets.compare_digest()` instead of a plain string comparison when checking the key, to avoid a timing attack where an attacker could theoretically infer how much of the key they got right based on how long the comparison takes. Low real risk for a project like this, but it's the kind of detail that matters more the higher the stakes get.
+
+
 ## License 
 This project is licensed under the MIT License.
