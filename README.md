@@ -20,6 +20,7 @@ Developer Toolkit API is a FastAPI microservice that provides a small set of dev
 | Security scanning (Trivy, gitleaks, Semgrep, Bandit) | [docs/security.md](docs/security.md) |
 | Metrics and usage history | [docs/observability.md](docs/observability.md) |
 | Docker and Docker Compose | [docs/docker.md](docs/docker.md) |
+| Deployment (Terraform, AWS) | [docs/deployment.md](docs/deployment.md) |
 
 ## Project structure
 
